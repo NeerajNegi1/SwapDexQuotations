@@ -1,0 +1,5 @@
+/node_modules
+localDevelopment.json
+production.json
+crypto-coins-cache
+crypto-prices-cache
