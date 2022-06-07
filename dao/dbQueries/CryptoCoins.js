@@ -18,4 +18,18 @@ const fetchCryptoCoinsByCoinId = async (coinId) => {
   }
 };
 
-module.exports = { fetchCryptoCoinsByCoinId };
+const fetchAllCryptoCoins = async () => {
+  try {
+    let cryptoCoins = await findCryptoCoinUsingIdLevel("fetchCryptoCoins");
+    if (cryptoCoins) {
+      return cryptoCoins;
+    }
+    cryptoCoins = await CryptoCoins.find({});
+    await updateCryptoCoinUsingIdLevel("fetchCryptoCoins", cryptoCoins);
+    return cryptoCoins;
+  } catch (error) {
+    return error;
+  }
+};
+
+module.exports = { fetchCryptoCoinsByCoinId, fetchAllCryptoCoins };

@@ -1,4 +1,7 @@
-const { fetchCryptoCoinsByCoinId } = require("../dao/dbQueries/CryptoCoins");
+const {
+  fetchCryptoCoinsByCoinId,
+  fetchAllCryptoCoins,
+} = require("../dao/dbQueries/CryptoCoins");
 const {
   getCryptoPrices,
   calculateBuyTokenAmount,
@@ -70,6 +73,24 @@ const getQuotations = async (req, res) => {
 
 const fetchAllCoins = async (req, res) => {
   try {
+    logger.info({
+      description: "Inside fetchAllCoins controller.",
+    });
+    let coins = await fetchAllCryptoCoins();
+    logger.info({
+      success: true,
+      description: "Successfully fetched all coins.",
+      data: {
+        coins,
+      },
+    });
+    return res.status(200).json({
+      success: true,
+      data: {
+        coins,
+        message: "Successfully fetched all coins.",
+      },
+    });
   } catch (error) {
     logger.error({
       success: false,
@@ -82,4 +103,53 @@ const fetchAllCoins = async (req, res) => {
   }
 };
 
-module.exports = { fetchAllCoins, getQuotations };
+const getTokenPrice = async (req, res) => {
+  try {
+    logger.info({
+      description: "Inside getTokenPrice controller.",
+    });
+    const { buyTokenId, sellTokenId } = req.body;
+    if (!buyTokenId || !sellTokenId) {
+      logger.info({
+        success: false,
+        description: "Invalid token id's",
+      });
+      return res.status(400).json({
+        success: false,
+        message: "Invalid token id's",
+      });
+    }
+    let promises = await Promise.all([
+      getCryptoPrices(buyTokenId),
+      getCryptoPrices(sellTokenId),
+    ]);
+
+    logger.info({
+      success: true,
+      description: "Successfully fetched prices.",
+      data: {
+        buyTokenIdPrice: promises[0].inr,
+        sellTokenIdPrice: promises[1].inr,
+      },
+    });
+    return res.status(200).json({
+      success: true,
+      message: "Successfully fetched all coins.",
+      data: {
+        buyTokenIdPrice: promises[0].inr,
+        sellTokenIdPrice: promises[1].inr,
+      },
+    });
+  } catch (error) {
+    logger.error({
+      success: false,
+      description: "Something went wrong inside getTokenPrice.",
+    });
+    return res.status(400).json({
+      success: false,
+      description: "Something went wrong",
+    });
+  }
+};
+
+module.exports = { fetchAllCoins, getQuotations, getTokenPrice };
