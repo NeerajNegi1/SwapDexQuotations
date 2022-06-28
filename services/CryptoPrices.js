@@ -1,18 +1,18 @@
 const {
-  findCryptoUsingIdLevel,
-  updateCryptoUsingIdLevel,
+  findCryptoUsingIdCache,
+  updateCryptoUsingIdCache,
 } = require("../dao/caching/cryproPriceCache");
 const { fetchCryptoPriceUsingId } = require("../IO/coingecko");
 
 const getCryptoPrices = async (cryptoId) => {
   try {
-    const cryptoPrice = await findCryptoUsingIdLevel(cryptoId);
+    const cryptoPrice = await findCryptoUsingIdCache(cryptoId);
     if (cryptoPrice && cryptoPrice.expires_at > Date.now()) {
       return cryptoPrice;
     }
     const data = await fetchCryptoPriceUsingId(cryptoId);
     data.expires_at = Date.now() + 60000;
-    await updateCryptoUsingIdLevel(cryptoId, data);
+    await updateCryptoUsingIdCache(cryptoId, data);
     return data;
   } catch (error) {
     console.log(error);

@@ -1,6 +1,6 @@
 const {
   getQuotations,
-  fetchAllCoins,
+  fetchAllChains,
   getTokenPrice,
 } = require("../controllers/CryptoPrices");
 
@@ -8,7 +8,7 @@ const router = require("express").Router();
 
 router.post("/fetch-quotations", getQuotations);
 
-router.get("/fetch-all-coins", fetchAllCoins);
+router.get("/fetch-all-chains", fetchAllChains);
 
 router.post("/fetch-token-price", getTokenPrice);
 

@@ -1,7 +1,5 @@
-const {
-  fetchCryptoCoinsByCoinId,
-  fetchAllCryptoCoins,
-} = require("../dao/dbQueries/CryptoCoins");
+const { fetchAllCryptoChains } = require("../dao/dbQueries/CryptoChains");
+const { fetchCryptoCoinsByCoinId } = require("../dao/dbQueries/CryptoCoins");
 const {
   getCryptoPrices,
   calculateBuyTokenAmount,
@@ -71,30 +69,30 @@ const getQuotations = async (req, res) => {
   }
 };
 
-const fetchAllCoins = async (req, res) => {
+const fetchAllChains = async (req, res) => {
   try {
     logger.info({
-      description: "Inside fetchAllCoins controller.",
+      description: "Inside fetchAllChains controller.",
     });
-    let coins = await fetchAllCryptoCoins();
+    let chains = await fetchAllCryptoChains();
     logger.info({
       success: true,
-      description: "Successfully fetched all coins.",
+      description: "Successfully fetched all chains.",
       data: {
-        coins,
+        chains,
       },
     });
     return res.status(200).json({
       success: true,
       data: {
-        coins,
-        message: "Successfully fetched all coins.",
+        chains,
+        message: "Successfully fetched all chains.",
       },
     });
   } catch (error) {
     logger.error({
       success: false,
-      description: "Something went wrong inside fetchAllCoins.",
+      description: "Something went wrong inside fetchAllChains.",
     });
     return res.status(400).json({
       success: false,
@@ -152,4 +150,4 @@ const getTokenPrice = async (req, res) => {
   }
 };
 
-module.exports = { fetchAllCoins, getQuotations, getTokenPrice };
+module.exports = { fetchAllChains, getQuotations, getTokenPrice };

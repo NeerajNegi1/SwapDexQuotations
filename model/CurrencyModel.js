@@ -2,35 +2,50 @@ const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 
-const CryptoCoinsSchema = new Schema({
-  coinId: {
-    type: String,
+const schema = new Schema(
+  {
+    coinId: {
+      type: String,
+      required: true,
+    },
+    decimals: {
+      type: Number,
+      required: true,
+    },
+    image: {
+      type: String,
+      required: true,
+    },
+    name: {
+      type: String,
+      required: true,
+    },
+    symbol: {
+      type: String,
+      required: true,
+    },
+    networkName: {
+      type: String,
+      required: true,
+    },
+    uniqueId: {
+      type: String,
+      required: true,
+    },
+    isDefaultCurrency: {
+      type: Boolean,
+      default: false,
+    },
+    tokenAddress: {
+      type: String,
+      required: true,
+    },
+    isTestnet: {
+      type: Boolean,
+      required: true,
+    },
   },
-  decimals: {
-    type: Number,
-  },
-  image: {
-    type: String,
-  },
-  name: {
-    type: String,
-  },
-  symbol: {
-    type: String,
-  },
-  networkName: {
-    type: String,
-  },
-  uniqueId: {
-    type: String,
-  },
-  isDefaultCurrency: {
-    type: Boolean,
-    default: false,
-  },
-  tokenAddress: {
-    type: String,
-  },
-});
+  { timestamps: true }
+);
 
-module.exports = mongoose.model("CryptoCoins", CryptoCoinsSchema);
+module.exports = mongoose.model("cryptoCoin", schema);

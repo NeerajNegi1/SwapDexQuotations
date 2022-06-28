@@ -38,7 +38,7 @@ const initialize = async (app) => {
   await initRoutes(app); // initiating the routes of the application
   app.listen(await getConfig("port"), async () => {
     logger.info({
-      description: `Server is running on port ${await getConfig("port")}`,
+      description: `Server is running on port ${await getConfig("port")} 🚀`,
     });
   });
 };

@@ -1,35 +1,22 @@
-const CryptoCoins = require("../../model/CurrencyModel");
+const CryptoCoinsModel = require("../../model/CurrencyModel");
+
 const {
-  findCryptoCoinUsingIdLevel,
-  updateCryptoCoinUsingIdLevel,
+  findCryptoCoinUsingIdCache,
+  updateCryptoCoinUsingIdCache,
 } = require("../caching/cryptoCurrencyCache");
 
 const fetchCryptoCoinsByCoinId = async (coinId) => {
   try {
-    let cryptoCoin = await findCryptoCoinUsingIdLevel(coinId);
+    let cryptoCoin = await findCryptoCoinUsingIdCache(coinId);
     if (cryptoCoin) {
       return cryptoCoin;
     }
-    cryptoCoin = await CryptoCoins.findOne({ coinId });
-    await updateCryptoCoinUsingIdLevel(coinId, cryptoCoin);
+    cryptoCoin = await CryptoCoinsModel.findOne({ coinId });
+    await updateCryptoCoinUsingIdCache(coinId, cryptoCoin);
     return cryptoCoin;
   } catch (error) {
     return error;
   }
 };
 
-const fetchAllCryptoCoins = async () => {
-  try {
-    let cryptoCoins = await findCryptoCoinUsingIdLevel("fetchCryptoCoins");
-    if (cryptoCoins) {
-      return cryptoCoins;
-    }
-    cryptoCoins = await CryptoCoins.find({});
-    await updateCryptoCoinUsingIdLevel("fetchCryptoCoins", cryptoCoins);
-    return cryptoCoins;
-  } catch (error) {
-    return error;
-  }
-};
-
-module.exports = { fetchCryptoCoinsByCoinId, fetchAllCryptoCoins };
+module.exports = { fetchCryptoCoinsByCoinId };
