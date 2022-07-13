@@ -4,15 +4,17 @@ const {
 } = require("../dao/caching/cryproPriceCache");
 const { fetchCryptoPriceUsingId } = require("../IO/coingecko");
 
-const getCryptoPrices = async (cryptoId) => {
+const getCryptoPrices = async (cryptoId, sellTokenAmount) => {
   try {
-    const cryptoPrice = await findCryptoUsingIdCache(cryptoId);
+    const cryptoPrice = await findCryptoUsingIdCache(
+      `${cryptoId}_${sellTokenAmount}`
+    );
     if (cryptoPrice && cryptoPrice.expires_at > Date.now()) {
       return cryptoPrice;
     }
     const data = await fetchCryptoPriceUsingId(cryptoId);
-    data.expires_at = Date.now() + 60000;
-    await updateCryptoUsingIdCache(cryptoId, data);
+    data.expires_at = Date.now() + 120000;
+    await updateCryptoUsingIdCache(`${cryptoId}_${sellTokenAmount}`, data);
     return data;
   } catch (error) {
     console.log(error);
@@ -35,11 +37,18 @@ const calculateBuyTokenAmount = async ({
     let totalBuyTokenReceivedByUser =
       totalAmountForSellingSellToken / buyTokenUnitPrice; // total number of token which user is buying
 
-    return totalBuyTokenReceivedByUser;
+    let priceForOneUnitOfBuyToken =
+      (totalBuyTokenReceivedByUser / sellTokenAmount) *
+      10 ** buyTokenData.decimals;
+
+    return { totalBuyTokenReceivedByUser, priceForOneUnitOfBuyToken };
   } catch (error) {
     console.log(error);
     return 0;
   }
 };
 
-module.exports = { getCryptoPrices, calculateBuyTokenAmount };
+module.exports = {
+  getCryptoPrices,
+  calculateBuyTokenAmount,
+};

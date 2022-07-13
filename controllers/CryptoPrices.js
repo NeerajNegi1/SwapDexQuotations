@@ -12,15 +12,16 @@ const getQuotations = async (req, res) => {
       description: "Inside getQuotations controller.",
       data: { ...req.body },
     });
-    const { buyTokenId, sellTokenId, sellTokenAmount } = req.body;
+    let { buyTokenId, sellTokenId, sellTokenAmount } = req.body;
 
     let fetchCryptoCoins = await Promise.all([
       fetchCryptoCoinsByCoinId(buyTokenId),
       fetchCryptoCoinsByCoinId(sellTokenId),
     ]);
-
     const buyTokenData = fetchCryptoCoins[0];
     const sellTokenData = fetchCryptoCoins[1];
+
+    sellTokenAmount = sellTokenAmount * 10 ** sellTokenData.decimals;
 
     if (!buyTokenData || !sellTokenData) {
       logger.info({
@@ -33,16 +34,17 @@ const getQuotations = async (req, res) => {
       });
     }
     let promises = await Promise.all([
-      getCryptoPrices(buyTokenId),
-      getCryptoPrices(sellTokenId),
+      getCryptoPrices(buyTokenId, sellTokenAmount),
+      getCryptoPrices(sellTokenId, sellTokenAmount),
     ]);
-    let totalBuyTokenReceivedByUser = await calculateBuyTokenAmount({
-      buyTokenData,
-      buyTokenUnitPrice: promises[0].inr,
-      sellTokenData,
-      sellTokenUnitPrice: promises[1].inr,
-      sellTokenAmount,
-    });
+    let { totalBuyTokenReceivedByUser, priceForOneUnitOfBuyToken } =
+      await calculateBuyTokenAmount({
+        buyTokenData,
+        buyTokenUnitPrice: promises[0].inr,
+        sellTokenData,
+        sellTokenUnitPrice: promises[1].inr,
+        sellTokenAmount,
+      });
     logger.info({
       success: true,
       description: "Successfully fetched quotations.",
@@ -54,6 +56,7 @@ const getQuotations = async (req, res) => {
       success: true,
       data: {
         totalBuyTokenReceivedByUser,
+        priceForOneUnitOfBuyToken,
         message: "Successfully fetched quotations.",
       },
     });
@@ -150,4 +153,8 @@ const getTokenPrice = async (req, res) => {
   }
 };
 
-module.exports = { fetchAllChains, getQuotations, getTokenPrice };
+module.exports = {
+  fetchAllChains,
+  getQuotations,
+  getTokenPrice,
+};
