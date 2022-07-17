@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
 const cryptoRates = require("./routes/CryptoPrices");
+const quotations = require("./routes/Quotations");
 const getConfig = require("./utils/config");
 const logger = require("./utils/logger");
 
@@ -14,6 +15,7 @@ const initRoutes = async (app) => {
 
   // custom routes
   app.use("/", cryptoRates);
+  app.use("/", quotations);
 
   // 404 route
   app.use((req, res) => {
@@ -38,7 +40,9 @@ const initialize = async (app) => {
   await initRoutes(app); // initiating the routes of the application
   app.listen(await getConfig("port"), async () => {
     logger.info({
-      description: `Server is running on port ${await getConfig("port")}`,
+      description: `SwapDexQuotations server is started on port ${await getConfig(
+        "port"
+      )} 🚀`,
     });
   });
 };

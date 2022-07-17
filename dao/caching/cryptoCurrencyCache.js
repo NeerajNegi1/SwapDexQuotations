@@ -1,18 +1,18 @@
 const { Level } = require("level");
-const cryptoCoinsDB = new Level("crypto-coins-cache", {
+const cryptoCoinsCache = new Level("crypto-coins-cache", {
   valueEncoding: "json",
 });
 
-const findCryptoCoinUsingIdLevel = async (cryptoId) => {
+const findCryptoCoinUsingIdCache = async (cryptoId) => {
   try {
-    return await cryptoCoinsDB.get(cryptoId);
+    return await cryptoCoinsCache.get(cryptoId);
   } catch (error) {
     return false;
   }
 };
 
-const updateCryptoCoinUsingIdLevel = async (id, data) => {
-  return await cryptoCoinsDB.put(id, data);
+const updateCryptoCoinUsingIdCache = async (id, data) => {
+  return await cryptoCoinsCache.put(id, data);
 };
 
-module.exports = { findCryptoCoinUsingIdLevel, updateCryptoCoinUsingIdLevel };
+module.exports = { findCryptoCoinUsingIdCache, updateCryptoCoinUsingIdCache };
