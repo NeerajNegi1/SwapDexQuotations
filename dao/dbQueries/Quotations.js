@@ -15,17 +15,21 @@ const createQuotation = async (data) => {
 
 const getQuotation = async (id) => {
   try {
-    let quotation = await getQuotationByIdCache(id);
-    if (quotation) {
-      return quotation;
-    }
-    quotation = await QuotationModel.findById(id).populate([
-      "buyCoinDetails",
-      "sellCoinDetails",
+    // let quotation = await getQuotationByIdCache(id);
+    // if (quotation) {
+    //   return quotation;
+    // }
+    let quotation = await QuotationModel.findById(id).populate([
+      {
+        path: "buyCoinDetails",
+        populate: ["defaultCoin"],
+      },
+      {
+        path: "sellCoinDetails",
+        populate: ["defaultCoin"],
+      },
     ]);
-
-    await updateQuotationByIdCache(id, quotation);
-
+    // await updateQuotationByIdCache(id, quotation);
     return quotation;
   } catch (error) {
     return error;

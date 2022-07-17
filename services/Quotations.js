@@ -33,7 +33,6 @@ const fetchQuotationService = async ({ quotationId }) => {
       throw Error("Order id not found.");
     }
     let response = await getQuotation(quotationId);
-
     return response;
   } catch (error) {
     console.log(error);
